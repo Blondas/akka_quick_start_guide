@@ -9,19 +9,21 @@ import akka.stream.scaladsl._
 import akka.util.ByteString
 
 import scala.concurrent.Future
+import scala.util.Success
 
-object quickStartGuide3 extends App{
+object quickStartGuide_2 extends App{
   implicit val system = ActorSystem("QuickStart")
   implicit val materializer = ActorMaterializer()
 
   val source: Source[Int, NotUsed] = Source(1 to 4)
   val factorials: Source[BigInt, NotUsed] = source
+//    .map(e => {print(s"element: $e => "); e})
     .scan(BigInt(1))((acc, next) => acc * next)
 
-  def lineSink(filename: String): Sink[String, Future[IOResult]] =
-    Flow[String]
-      .map(s => ByteString(s + "\n"))
-      .toMat(FileIO.toPath(Paths.get(filename)))(Keep.right)
+  val result: Future[IOResult] = factorials
+    .map(num => ByteString(s"$num\n"))
+      .runWith(FileIO.toPath((Paths.get("factorials.txt"))))
+//        .runForeach(e => println(s"silnia: $e"))
 
-  factorials.map(_.toString) runWith lineSink("factorial2.txt")
+
 }

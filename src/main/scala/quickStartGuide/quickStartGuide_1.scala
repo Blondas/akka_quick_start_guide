@@ -9,7 +9,7 @@ import java.nio.file.Paths
 
 import scala.concurrent.Future
 
-object quickStartGuide extends App{
+object quickStartGuide_1 extends App{
   implicit val system = ActorSystem("QuickStart")
   implicit val materializer = ActorMaterializer()
 
